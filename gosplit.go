@@ -57,17 +57,23 @@ commentbox.onscroll=syncscroll
 </html>
 `
 
+func codeTag(instring string) string {
+	return fmt.Sprintf("<code> %s</code><br>", instring)
+}
+
 func mkP(aline string) (string, string) {
-	blank := fmt.Sprintf("<code> </code><br")
-	data := fmt.Sprintf("<code> %s</code><br>", aline)
 	r := strings.NewReplacer("{", "<span style='color:lime'>{</span>", "}", "<span style='color:lime'>}</span>",
 		" func ", "<span style='color:blue'> func </span>", " var ", "<span style='color:red'> var </span>")
-
-	data = r.Replace(data)
-	if strings.HasPrefix(strings.Trim(aline, " \n\t	"), `//`) {
-		return data, blank
-	}
-	return blank, data
+	data = r.Replace(aline)
+	if strings.Contains(data,'//'){
+		splitLine := string.Split(data,'//')
+		comment := codeTag(splitline[1])
+		code := codeTag(splitline[0])
+	} else {
+		comment := codeTag(" ")
+		code := codeTag(data)
+	}	
+	return comment,code
 }
 
 func main() {
